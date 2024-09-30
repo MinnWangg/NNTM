@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 
 
+
 public class NoteFragment extends Fragment {
 
 
