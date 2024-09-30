@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/gauge"
+        android:title="Gauge"
+        android:icon="@drawable/ic_gauge"/>
+
+    <item
+        android:id="@+id/note"
+        android:title="Note"
+        android:icon="@drawable/ic_note"/>
+
+    <item
+        android:id="@+id/fab"
+        android:title=""
+        android:enabled="false"/>
+
+    <item
+        android:id="@+id/crop"
+        android:title="Crop"
+        android:icon="@drawable/ic_crop"/>
+
+    <item
+        android:id="@+id/user"
+        android:title="User"
+        android:icon="@drawable/ic_user"/>
+
+
+</menu>

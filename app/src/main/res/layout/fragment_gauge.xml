@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    tools:context=".GaugeFragment">
+
+    <!-- Khung thông tin gauges -->
+    <LinearLayout
+        android:id="@+id/gauge_info_frame"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="40dp">
+
+        <!-- Hàng đầu tiên của gauge -->
+        <LinearLayout
+            android:id="@+id/gauge_row1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <!-- Gauge cho Nhiệt độ -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nhiệt độ"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="#000"/>
+
+                <com.github.anastr.speedviewlib.SpeedView
+                    android:id="@+id/gauge_temperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    app:sv_maxSpeed="100"
+                    app:sv_unit="°C"
+                    app:sv_pointerColor="#FF5722"
+                    app:sv_speedTextColor="#000"
+                    app:sv_withTremble="true"/>
+            </LinearLayout>
+
+            <!-- Gauge cho Ánh sáng -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ánh sáng"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="#000"/>
+
+                <com.github.anastr.speedviewlib.SpeedView
+                    android:id="@+id/gauge_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    app:sv_maxSpeed="1000"
+                    app:sv_unit="lx"
+                    app:sv_pointerColor="#FFEB3B"
+                    app:sv_speedTextColor="#000"
+                    app:sv_withTremble="true"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Hàng thứ hai của gauge -->
+        <LinearLayout
+            android:id="@+id/gauge_row2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Gauge cho Độ ẩm -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Độ ẩm"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="#000"/>
+
+                <com.github.anastr.speedviewlib.SpeedView
+                    android:id="@+id/gauge_humidity"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    app:sv_maxSpeed="100"
+                    app:sv_unit="%"
+                    app:sv_pointerColor="#4CAF50"
+                    app:sv_speedTextColor="#000"
+                    app:sv_withTremble="true"/>
+            </LinearLayout>
+
+            <!-- Gauge cho Độ ẩm đất -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Độ ẩm đất"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="#000"/>
+
+                <com.github.anastr.speedviewlib.SpeedView
+                    android:id="@+id/gauge_soil_humidity"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    app:sv_maxSpeed="100"
+                    app:sv_unit="%"
+                    app:sv_pointerColor="#03A9F4"
+                    app:sv_speedTextColor="#000"
+                    app:sv_withTremble="true"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

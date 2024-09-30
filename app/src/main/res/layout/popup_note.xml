@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Mã khách hàng -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/colorAccent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_ma_khach_hang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Mã khách hàng"
+            android:inputType="text"
+            android:textColor="@android:color/black"
+            android:padding="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Tên cây trồng -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/colorAccent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tên cây trồng"
+            android:inputType="text"
+            android:textColor="@android:color/black"
+            android:padding="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Ngày trồng -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/colorAccent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_planting_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ngày trồng"
+            android:inputType="date"
+            android:padding="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Ngày thu hoạch -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/colorAccent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_harvest_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ngày thu hoạch"
+            android:inputType="date"
+            android:padding="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Ngày bón phân -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/colorAccent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_fertilization_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ngày bón phân"
+            android:inputType="date"
+            android:padding="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Ngày phun thuốc -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/colorAccent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_pesticide_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ngày phun thuốc"
+            android:inputType="date"
+            android:padding="16dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Tưới nước -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/colorAccent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_watering"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Điều kiện tưới nước"
+            android:inputType="text"
+            android:textColor="@android:color/black"
+            android:padding="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Ngừng tưới nước -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:hintEnabled="true"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/colorAccent">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_stop_watering"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Điều kiện ngừng tưới"
+            android:inputType="text"
+            android:textColor="@android:color/black"
+            android:padding="8dp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Các nút xác nhận và hủy -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingTop="16dp">
+
+        <!-- Nút Hủy -->
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hủy"
+            android:textColor="@android:color/white"
+            android:background="@color/colorAccent" />
+
+        <!-- Nút Lưu -->
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lưu"
+            android:layout_marginStart="16dp"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary" />
+    </LinearLayout>
+
+</LinearLayout>
