@@ -1,14 +1,19 @@
 package com.example.myapplication;
 
+import Data.PlantInfo;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Button;
+import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
+import android.util.Log;
 
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.example.myapplication.databinding.PopupNoteBinding;
 
 public class PopupManager {
@@ -21,29 +26,54 @@ public class PopupManager {
 
     // Phương thức để hiển thị popup cho NoteFragment
     public void showNotePopup() {
-        // Sử dụng AlertDialog để tạo popup
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-        // Inflate layout cho popup từ file XML (popup_note.xml)
         LayoutInflater inflater = LayoutInflater.from(context);
         View popupView = inflater.inflate(R.layout.popup_note, null);
-        // Liên kết các view trong popup với mã Java
+
         TextInputEditText maKhachHangEditText = popupView.findViewById(R.id.edit_text_ma_khach_hang);
         TextInputEditText nameEditText = popupView.findViewById(R.id.edit_text_name);
-        TextView plantingDateTextView = popupView.findViewById(R.id.edit_text_planting_date);
-        TextView harvestDateTextView = popupView.findViewById(R.id.edit_text_harvest_date);
-        TextView fertilizationDateTextView = popupView.findViewById(R.id.edit_text_fertilization_date);
-        TextView pesticideDateTextView = popupView.findViewById(R.id.edit_text_pesticide_date);
-        TextInputEditText wateringEditText = popupView.findViewById(R.id.edit_text_watering);
-        TextInputEditText stopWateringEditText = popupView.findViewById(R.id.edit_text_stop_watering);
+        Button btnSave = popupView.findViewById(R.id.btn_save);
+        Button btnCancel = popupView.findViewById(R.id.btn_cancel);
 
-        // Cài đặt View cho AlertDialog
         builder.setView(popupView);
-
-        // Hiển thị AlertDialog
         AlertDialog dialog = builder.create();
         dialog.show();
         dialog.getWindow().setBackgroundDrawableResource(R.drawable.popup_background);
+
+        btnSave.setOnClickListener(v -> {
+            String maKhachHang = maKhachHangEditText.getText().toString().trim();
+            String name = nameEditText.getText().toString().trim();
+
+            if (maKhachHang.isEmpty() || name.isEmpty()) {
+                Toast.makeText(context, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+            } else {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference plantsRef = database.getReference("Plants");
+
+                // Sử dụng tên cây làm ID
+                String plantId = name;
+
+
+                PlantInfo plant = new PlantInfo(maKhachHang, plantId);
+
+
+                plant.setId(plantId);
+                Log.d("PopupManager", "Plant ID: " + plantId);
+                plantsRef.child(plantId).setValue(plant).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("PopupManager", "Plant saved with ID: " + plantId);
+                        Toast.makeText(context, "Dữ liệu đã được lưu thành công!", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(context, "Lỗi khi lưu dữ liệu!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
     }
+
+
 
 }

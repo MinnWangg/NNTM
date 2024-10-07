@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "83887538933",
+    "firebase_url": "https://nntm-8ec93-default-rtdb.firebaseio.com",
+    "project_id": "nntm-8ec93",
+    "storage_bucket": "nntm-8ec93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:83887538933:android:c842f332aa637fc0b63bbc",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9OFV5ggrCJMSubJETrAfaz_AZ6kyAjn8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
