@@ -37,15 +37,19 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.gauge) {
                 replaceFragment(new GaugeFragment());
-                binding.floatingActionButton.setImageResource(R.drawable.ic_up);
+                binding.floatingActionButton.hide();
+                //binding.floatingActionButton.setImageResource(R.drawable.ic_up);
             } else if (itemId == R.id.note) {
                 replaceFragment(new NoteFragment());
+                binding.floatingActionButton.show();
                 binding.floatingActionButton.setImageResource(R.drawable.ic_plus);
             } else if (itemId == R.id.crop) {
                 replaceFragment(new CropFragment());
+                binding.floatingActionButton.show();
                 binding.floatingActionButton.setImageResource(R.drawable.ic_plus);
             } else if (itemId == R.id.user) {
                 replaceFragment(new UserFragment());
+                binding.floatingActionButton.show();
                 binding.floatingActionButton.setImageResource(R.drawable.ic_logout);
             }
 
@@ -58,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
             // Kiểm tra Fragment hiện tại và thực hiện hành động tương ứng
             if (currentFragment instanceof GaugeFragment) {
 
-                Snackbar.make(binding.getRoot(), "Gauge Fragment: FAB Clicked", Snackbar.LENGTH_SHORT).show();
             } else if (currentFragment instanceof NoteFragment) {
 
                 popupManager.showNotePopup();
