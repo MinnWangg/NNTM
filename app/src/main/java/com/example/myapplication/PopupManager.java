@@ -1,61 +1,83 @@
 package com.example.myapplication;
-import API.SheetsServiceUtil;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PopupManager {
 
     private Context context;
-    private SheetsServiceUtil sheetsServiceUtil;
+    private Sheets sheetsService;
+    private String spreadsheetId = "1zZi8rKEgIWFsgs98PCOxiXldqpXgl7KW-69CREtL-rI";
 
-    // Constructor để nhận context từ MainActivity
-    public PopupManager(Context context) {
+    public PopupManager(Context context, Sheets sheetsService) {
         this.context = context;
+        this.sheetsService = sheetsService;
     }
 
-    // Hàm để hiển thị popup_note
     public void showNotePopup() {
-        // Khởi tạo AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-        // Inflate layout popup_note.xml
         LayoutInflater inflater = LayoutInflater.from(context);
         View popupView = inflater.inflate(R.layout.popup_note, null);
         builder.setView(popupView);
 
-        // Tìm các View trong popup_note.xml
         EditText maKhachHang = popupView.findViewById(R.id.edit_text_ma_khach_hang);
         EditText tenCayTrong = popupView.findViewById(R.id.edit_text_name);
         Button btnSave = popupView.findViewById(R.id.btn_save);
         Button btnCancel = popupView.findViewById(R.id.btn_cancel);
 
-        // Khởi tạo dialog từ builder
         AlertDialog dialog = builder.create();
 
-        // Thiết lập hành động cho nút Hủy
-        btnCancel.setOnClickListener(v -> {
-            // Đóng dialog
-            dialog.dismiss();
-        });
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-        // Thiết lập hành động cho nút Lưu
         btnSave.setOnClickListener(v -> {
-            // Lấy thông tin từ EditText
             String maKhach = maKhachHang.getText().toString();
             String tenCay = tenCayTrong.getText().toString();
 
-            // Thực hiện lưu hoặc thao tác khác
-            Toast.makeText(context, "Lưu: " + maKhach + ", " + tenCay, Toast.LENGTH_SHORT).show();
-            dialog.dismiss(); // Đóng dialog sau khi lưu
+            if (!maKhach.isEmpty() && !tenCay.isEmpty()) {
+                savePlantToGoogleSheet(tenCay, maKhach, tenCay);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(context, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        // Hiển thị popup
         dialog.show();
+    }
+
+    private void savePlantToGoogleSheet(String id, String maKhachHang, String tenCay) {
+        new Thread(() -> {
+            try {
+                // Chuẩn bị dữ liệu để thêm vào Google Sheets
+                List<List<Object>> rowData = new ArrayList<>();
+                rowData.add(Arrays.asList(id, maKhachHang, tenCay));
+
+                // Tạo một giá trị Range mới
+                ValueRange appendBody = new ValueRange().setValues(rowData);
+
+                sheetsService.spreadsheets().values()
+                        .append(spreadsheetId, "Note!A2", appendBody)
+                        .setValueInputOption("RAW")
+                        .execute();
+
+                ((MainActivity) context).runOnUiThread(() -> {
+                    Toast.makeText(context, "Lưu thông tin thành công", Toast.LENGTH_SHORT).show();
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                ((MainActivity) context).runOnUiThread(() ->
+                        Toast.makeText(context, "Lưu thông tin thất bại", Toast.LENGTH_SHORT).show()
+                );
+            }
+        }).start();
     }
 }

@@ -2,7 +2,7 @@ package com.example.myapplication;
 
 import androidx.fragment.app.Fragment;
 import API.SheetsServiceUtil;
-import API.*;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +29,7 @@ public class NoteFragment extends Fragment {
 
     private Sheets sheetsService;
     private String spreadsheetId = "1zZi8rKEgIWFsgs98PCOxiXldqpXgl7KW-69CREtL-rI";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -155,6 +156,8 @@ public class NoteFragment extends Fragment {
 
 
 
+
+
     private void showEditPlantPopup(String plantId) {
         updateDataDisplay();
 
@@ -195,7 +198,6 @@ public class NoteFragment extends Fragment {
             try {
                 List<Object> row = SheetsServiceUtil.getPlantInfo(sheetsService, spreadsheetId, plantId);
                 if (row != null) {
-                    // Hiển thị thông tin cây trong popup
                     // Hiển thị thông tin cây trong popup
                     getActivity().runOnUiThread(() -> {
                         plantNameSheet.setText(row.size() > 2 && row.get(2) != null ? row.get(2).toString() : "");

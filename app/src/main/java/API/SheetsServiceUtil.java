@@ -102,69 +102,50 @@ public class SheetsServiceUtil {
 
 
     //Xóa dữ liệu
-    public static void deletePlantFromSheet(Sheets service, String spreadsheetId, String plantId) throws IOException {
-        // Tìm hàng chứa plantId
-        int rowIndex = findRowIndexByPlantId(service, spreadsheetId, plantId);
+    public static void deletePlantFromSheet(Sheets sheetsService, String spreadsheetId, String plantId) throws IOException {
+        ValueRange response = sheetsService.spreadsheets().values()
+                .get(spreadsheetId, "Note!A:C")  // Lấy dữ liệu từ cột A đến C
+                .execute();
+        List<List<Object>> values = response.getValues();
 
-        if (rowIndex != -1) {
-            // Tạo yêu cầu xóa hàng
-            List<Request> requests = new ArrayList<>();
-            requests.add(new Request()
-                    .setDeleteDimension(new DeleteDimensionRequest()
+        if (values != null) {
+            for (int i = 0; i < values.size(); i++) {
+                // Kiểm tra giá trị trong cột C (TenCay)
+                if (values.get(i).size() > 2 && values.get(i).get(2).equals(plantId)) {
+
+                    DeleteDimensionRequest deleteRequest = new DeleteDimensionRequest()
                             .setRange(new DimensionRange()
-                                    .setSheetId(0) // ID của sheet, 0 là sheet đầu tiên
+                                    .setSheetId(1655091081)  // Sử dụng ID của sheet
                                     .setDimension("ROWS")
-                                    .setStartIndex(rowIndex) // Vị trí hàng bắt đầu
-                                    .setEndIndex(rowIndex + 1) // Vị trí hàng kết thúc
-                            )));
+                                    .setStartIndex(i)
+                                    .setEndIndex(i + 1)
+                            );
 
-            // Thực hiện yêu cầu xóa
-            BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest().setRequests(requests);
-            service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest).execute();
-        }
-    }
-    private static int findRowIndexByPlantId(Sheets service, String spreadsheetId, String plantId) {
-        try {
-            List<List<Object>> rows = getDataFromSheet(service, spreadsheetId, "Note!A2:A"); // Lấy dữ liệu cột chứa plantId
+                    List<Request> requests = new ArrayList<>();
+                    requests.add(new Request().setDeleteDimension(deleteRequest));
 
-            // Kiểm tra xem rows có null hoặc trống không
-            if (rows == null || rows.isEmpty()) {
-                Log.e("findRowIndex", "No data found in the specified range.");
-                return -1;
-            }
+                    BatchUpdateSpreadsheetRequest body = new BatchUpdateSpreadsheetRequest().setRequests(requests);
 
-            for (int i = 0; i < rows.size(); i++) {
-
-                if (!rows.get(i).isEmpty() && rows.get(i).get(0) != null && rows.get(i).get(0).toString().equals(plantId)) {
-                    return i + 2;
+                    try {
+                        sheetsService.spreadsheets().batchUpdate(spreadsheetId, body).execute();
+                        System.out.println("Đã xóa cây: " + plantId);
+                    } catch (IOException e) {
+                        System.err.println("Không thể xóa cây: " + e.getMessage());
+                    }
+                    break;
                 }
             }
-        } catch (IOException e) {
-            Log.e("findRowIndex", "Error retrieving data from sheet: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            Log.e("findRowIndex", "Unexpected error: " + e.getMessage());
-            e.printStackTrace();
+        } else {
+            System.out.println("Không tìm thấy cây nào để xóa.");
         }
-        return -1;
     }
 
 
 
 
-    public static void deleteRow(Sheets service, String spreadsheetId, int rowIndex) throws IOException {
-        List<Request> requests = new ArrayList<>();
-        requests.add(new Request()
-                .setDeleteDimension(new DeleteDimensionRequest()
-                        .setRange(new DimensionRange()
-                                .setSheetId(0)
-                                .setDimension("ROWS")
-                                .setStartIndex(rowIndex - 1)
-                                .setEndIndex(rowIndex))));
 
-        BatchUpdateSpreadsheetRequest body = new BatchUpdateSpreadsheetRequest().setRequests(requests);
-        service.spreadsheets().batchUpdate(spreadsheetId, body).execute();
-    }
+
+
 
 
 
