@@ -35,8 +35,8 @@ public class GaugeFragment extends Fragment {
 
         // Khởi tạo các gauge
         gaugeTemperature = view.findViewById(R.id.gauge_temperature);
-        gaugeLight = view.findViewById(R.id.gauge_light);
         gaugeHumidity = view.findViewById(R.id.gauge_humidity);
+        gaugeLight = view.findViewById(R.id.gauge_light);
         gaugeSoilHumidity = view.findViewById(R.id.gauge_soil_humidity);
 
         // Lấy dữ liệu từ Google Sheets
@@ -48,7 +48,7 @@ public class GaugeFragment extends Fragment {
     private void fetchDataFromGoogleSheet() {
         new Thread(() -> {
             try {
-                // Lấy dữ liệu từ Google Sheets
+
                 ValueRange result = sheetsService.spreadsheets().values()
                         .get(spreadsheetId, "data!C2:F2")
                         .execute();
@@ -56,20 +56,20 @@ public class GaugeFragment extends Fragment {
                 List<List<Object>> values = result.getValues();
 
                 if (values != null && !values.isEmpty()) {
-                    // Lấy thông số từ các cột
+
                     List<Object> row = values.get(0);
                     if (row.size() >= 4) {
                         // Cập nhật giá trị cho các gauge
                         float temperature = Float.parseFloat(row.get(0).toString());
-                        float light = Float.parseFloat(row.get(1).toString());
-                        float humidity = Float.parseFloat(row.get(2).toString());
+                        float humidity = Float.parseFloat(row.get(1).toString());
+                        float light = Float.parseFloat(row.get(2).toString());
                         float soilHumidity = Float.parseFloat(row.get(3).toString());
 
                         // Cập nhật UI trên MainThread
                         getActivity().runOnUiThread(() -> {
                             gaugeTemperature.speedTo(temperature);
-                            gaugeLight.speedTo(light);
                             gaugeHumidity.speedTo(humidity);
+                            gaugeLight.speedTo(light);
                             gaugeSoilHumidity.speedTo(soilHumidity);
                         });
                     }

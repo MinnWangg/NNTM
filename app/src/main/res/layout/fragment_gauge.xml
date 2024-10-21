@@ -56,44 +56,6 @@
                     app:sv_withTremble="true"/>
             </LinearLayout>
 
-            <!-- Gauge cho Ánh sáng -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:padding="8dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Ánh sáng"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:layout_marginBottom="8dp"
-                    android:textColor="#000"/>
-
-                <com.github.anastr.speedviewlib.SpeedView
-                    android:id="@+id/gauge_light"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:sv_maxSpeed="1000"
-                    app:sv_unit="lx"
-                    app:sv_pointerColor="#FFEB3B"
-                    app:sv_speedTextColor="#000"
-                    app:sv_withTremble="true"/>
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- Hàng thứ hai của gauge -->
-        <LinearLayout
-            android:id="@+id/gauge_row2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
             <!-- Gauge cho Độ ẩm -->
             <LinearLayout
                 android:layout_width="0dp"
@@ -119,6 +81,43 @@
                     app:sv_maxSpeed="100"
                     app:sv_unit="%"
                     app:sv_pointerColor="#4CAF50"
+                    app:sv_speedTextColor="#000"
+                    app:sv_withTremble="true"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Hàng thứ hai của gauge -->
+        <LinearLayout
+            android:id="@+id/gauge_row2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Gauge cho Ánh sáng -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ánh sáng"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="#000"/>
+
+                <com.github.anastr.speedviewlib.SpeedView
+                    android:id="@+id/gauge_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    app:sv_maxSpeed="1000"
+                    app:sv_unit="lx"
+                    app:sv_pointerColor="#FFEB3B"
                     app:sv_speedTextColor="#000"
                     app:sv_withTremble="true"/>
             </LinearLayout>
@@ -151,7 +150,147 @@
                     app:sv_speedTextColor="#000"
                     app:sv_withTremble="true"/>
             </LinearLayout>
+        </LinearLayout>
 
+
+
+
+        <!-- Bảng điều kiện tưới -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/white"
+            android:elevation="4dp"
+            android:layout_marginTop="4dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tình trạng bơm:"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <EditText
+                    android:id="@+id/pump_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="text"
+                    />
+
+            </LinearLayout>
+
+
+
+            <!-- Điều kiện Ánh sáng -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ĐK Ánh sáng >= "
+                    android:textSize="14sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <EditText
+                    android:id="@+id/condition_light"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="lx"
+                    android:textSize="14sp"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <!-- Điều kiện Độ ẩm đất <= -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ĐK Độ ẩm đất <= "
+                    android:textSize="14sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <EditText
+                    android:id="@+id/condition_soil_humidity_max"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="%"
+                    android:textSize="14sp"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <!-- Điều kiện ngừng tưới -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ĐK ngừng tưới (Độ ẩm đất) >= "
+                    android:textSize="14sp"
+                    android:layout_marginEnd="8dp"/>
+
+                <EditText
+                    android:id="@+id/condition_soil_humidity_stop"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="%"
+                    android:textSize="14sp"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <!-- Nút sửa điều kiện -->
+            <Button
+                android:id="@+id/btn_edit_conditions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sửa điều kiện"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"/>
         </LinearLayout>
 
     </LinearLayout>
