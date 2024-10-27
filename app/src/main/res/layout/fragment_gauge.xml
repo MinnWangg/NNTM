@@ -152,9 +152,6 @@
             </LinearLayout>
         </LinearLayout>
 
-
-
-
         <!-- Bảng điều kiện tưới -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -164,7 +161,6 @@
             android:background="@color/white"
             android:elevation="4dp"
             android:layout_marginTop="4dp">
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -185,11 +181,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:inputType="text"
+                    android:focusable="false"
+                    android:clickable="false"
                     />
-
             </LinearLayout>
-
-
 
             <!-- Điều kiện Ánh sáng -->
             <LinearLayout
@@ -201,7 +196,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ĐK Ánh sáng >= "
+                    android:text="ĐK Ánh sáng &lt;= "
                     android:textSize="14sp"
                     android:layout_marginEnd="8dp"/>
 
@@ -211,6 +206,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:inputType="number"
+                    android:focusable="false"
+                    android:clickable="false"
                     />
 
                 <TextView
@@ -232,7 +229,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ĐK Độ ẩm đất <= "
+                    android:text="ĐK Độ ẩm đất &lt;="
                     android:textSize="14sp"
                     android:layout_marginEnd="8dp"/>
 
@@ -242,6 +239,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:inputType="number"
+                    android:focusable="false"
+                    android:clickable="false"
                     />
 
                 <TextView
@@ -263,16 +262,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ĐK ngừng tưới (Độ ẩm đất) >= "
+                    android:text="ĐK ngừng tưới (Độ ẩm đất) &gt;= "
                     android:textSize="14sp"
                     android:layout_marginEnd="8dp"/>
 
                 <EditText
-                    android:id="@+id/condition_soil_humidity_stop"
+                    android:id="@+id/condition_soil_humidity_min"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:inputType="number"
+                    android:focusable="false"
+                    android:clickable="false"
                     />
 
                 <TextView
@@ -282,8 +283,6 @@
                     android:textSize="14sp"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
-
-            <!-- Nút sửa điều kiện -->
             <Button
                 android:id="@+id/btn_edit_conditions"
                 android:layout_width="wrap_content"
@@ -292,7 +291,5 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"/>
         </LinearLayout>
-
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
