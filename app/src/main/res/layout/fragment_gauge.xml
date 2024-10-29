@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="40dp">
+        android:layout_marginBottom="20dp">
 
         <!-- Hàng đầu tiên của gauge -->
         <LinearLayout
@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="0dp">
 
             <!-- Gauge cho Nhiệt độ -->
             <LinearLayout
@@ -152,8 +152,23 @@
             </LinearLayout>
         </LinearLayout>
 
+<!--        nút-->
+        <Switch
+            android:id="@+id/toggle_conditions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text= "Tắt/Bật chế độ auto"
+            app:layout_constraintTop_toBottomOf="@id/gauge_info_frame"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:thumbTint="@color/colorOff"
+            android:trackTint="@color/trackOff"
+            android:layout_marginTop="8dp"/>
+
+
         <!-- Bảng điều kiện tưới -->
         <LinearLayout
+            android:id="@+id/conditionLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

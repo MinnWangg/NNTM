@@ -1,12 +1,14 @@
 package com.example.myapplication;
 
 import android.app.Dialog;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -32,6 +34,7 @@ public class GaugeFragment extends Fragment {
     private View view;
 
     private Handler handler = new Handler();
+
     private Runnable updateDataRunnable;
 
     public GaugeFragment(Sheets sheetsService) {
@@ -63,8 +66,21 @@ public class GaugeFragment extends Fragment {
             }
         };
 
-        // Bắt đầu chạy cập nhật dữ liệu
+
         handler.post(updateDataRunnable);
+
+        Switch toggleConditions = view.findViewById(R.id.toggle_conditions);
+
+        // Thiết lập hành vi của Switch để khóa bảng điều kiện
+        toggleConditions.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            toggleConditions.setThumbTintList(ColorStateList.valueOf(getResources().getColor(
+                    isChecked ? R.color.colorOn : R.color.colorOff)));
+            setConditionsEnabled(!isChecked); // Khóa hoặc mở khóa bảng điều kiện
+            updateGoogleSheetToggle(isChecked); // Cập nhật ô D2 trên Google Sheets
+        });
+
+        // Cập nhật liên tục trạng thái của ô D2 và điều chỉnh Switch
+        fetchToggleStatus();
 
         return view;
     }
@@ -172,7 +188,7 @@ public class GaugeFragment extends Fragment {
 
 
     private void saveConditionsToGoogleSheet(String conditionLight, String conditionSoilHumidityMax, String conditionSoilHumidityMin) {
-        // Chuẩn bị dữ liệu để lưu
+
         List<List<Object>> values = List.of(
                 List.of(conditionLight, conditionSoilHumidityMax, conditionSoilHumidityMin)
         );
@@ -196,6 +212,68 @@ public class GaugeFragment extends Fragment {
             }
         }).start();
     }
+
+    //ẩn bảng đk
+    private void setConditionsEnabled(boolean enabled) {
+        View conditionLayout = view.findViewById(R.id.conditionLayout);
+        int color = enabled ? R.color.white : R.color.light_gray;
+
+        conditionLayout.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color)));
+
+
+        conditionLayout.setEnabled(enabled);
+
+        for (int i = 0; i < ((ViewGroup) conditionLayout).getChildCount(); i++) {
+            View child = ((ViewGroup) conditionLayout).getChildAt(i);
+            child.setEnabled(enabled);
+        }
+    }
+
+    //bật tắt auto
+    private void updateGoogleSheetToggle(boolean toggleStatus) {
+        List<List<Object>> values = List.of(List.of(toggleStatus ? "1" : "0"));
+
+        ValueRange body = new ValueRange().setValues(values);
+
+        new Thread(() -> {
+            try {
+                sheetsService.spreadsheets().values()
+                        .update(spreadsheetId, "thaydoiDK!D2", body)
+                        .setValueInputOption("RAW")
+                        .execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                showToast("Lỗi khi cập nhật trạng thái Switch!");
+            }
+        }).start();
+    }
+
+    private void fetchToggleStatus() {
+        new Thread(() -> {
+            try {
+                ValueRange result = sheetsService.spreadsheets().values()
+                        .get(spreadsheetId, "thaydoiDK!D2")
+                        .execute();
+
+                List<List<Object>> values = result.getValues();
+                if (values != null && !values.isEmpty()) {
+                    String toggleValue = values.get(0).get(0).toString();
+
+                    boolean toggleStatus = toggleValue.equals("ON");
+
+                    getActivity().runOnUiThread(() -> {
+                        Switch toggleConditions = view.findViewById(R.id.toggle_conditions);
+                        toggleConditions.setChecked(toggleStatus);
+                        setConditionsEnabled(!toggleStatus);
+                    });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                showToast("Lỗi khi lấy trạng thái Switch từ Google Sheets.");
+            }
+        }).start();
+    }
+
 
 
 

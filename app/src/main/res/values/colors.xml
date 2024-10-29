@@ -12,4 +12,10 @@
     <color name="colorRed">#F44336</color>
     <color name="colorGreen">#4CAF50</color>
     <color name="colorBlue">#2196F3</color>
+    <color name="colorOn">#FF5722</color> <!-- Màu khi bật -->
+    <color name="trackOn">#FFE0B2</color> <!-- Track khi bật -->
+    <color name="colorOff">#BDBDBD</color> <!-- Màu khi tắt -->
+    <color name="trackOff">#808080</color> <!-- Track khi tắt -->
+   <color name="light_gray">#D3D3D3</color> <!--  màu-->
+
 </resources>
