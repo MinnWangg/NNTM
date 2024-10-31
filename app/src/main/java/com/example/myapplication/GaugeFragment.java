@@ -1,8 +1,10 @@
 package com.example.myapplication;
 
 import android.app.Dialog;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,14 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import android.os.Handler;
 
+import org.tensorflow.lite.Interpreter;
+
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GaugeFragment extends Fragment {
@@ -34,8 +43,8 @@ public class GaugeFragment extends Fragment {
     private View view;
 
     private Handler handler = new Handler();
-
     private Runnable updateDataRunnable;
+    private Interpreter tflite;
 
     public GaugeFragment(Sheets sheetsService) {
         this.sheetsService = sheetsService;
@@ -54,7 +63,7 @@ public class GaugeFragment extends Fragment {
 
         // Lấy dữ liệu từ Google Sheets
         fetchDataFromGoogleSheet();
-
+        initializeInterpreter();
         Button btnEditConditions = view.findViewById(R.id.btn_edit_conditions);
         btnEditConditions.setOnClickListener(v -> showEditConditionsPopup());
 
@@ -79,10 +88,21 @@ public class GaugeFragment extends Fragment {
             updateGoogleSheetToggle(isChecked); // Cập nhật ô D2 trên Google Sheets
         });
 
-        // Cập nhật liên tục trạng thái của ô D2 và điều chỉnh Switch
+
         fetchToggleStatus();
 
         return view;
+    }
+
+    private void initializeInterpreter() {
+        try {
+            MappedByteBuffer modelFile = loadModelFile();
+            tflite = new Interpreter(modelFile);
+            showToast("Mô hình TensorFlow Lite đã được khởi tạo.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showToast("Không thể tải mô hình TensorFlow Lite.");
+        }
     }
 
     @Override
@@ -90,6 +110,19 @@ public class GaugeFragment extends Fragment {
         super.onDestroyView();
         // Dừng việc cập nhật khi fragment bị hủy
         handler.removeCallbacks(updateDataRunnable);
+        if (tflite != null) {
+            tflite.close();
+        }
+    }
+
+    // Hàm load mô hình TFLite từ assets
+    private MappedByteBuffer loadModelFile() throws IOException {
+        AssetFileDescriptor fileDescriptor = getActivity().getAssets().openFd("conme.tflite");
+        FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = fileDescriptor.getStartOffset();
+        long declaredLength = fileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
     }
 
     private void fetchDataFromGoogleSheet() {
@@ -112,17 +145,26 @@ public class GaugeFragment extends Fragment {
                     List<Object> rowData = valuesData.get(0);
                     List<Object> rowConditions = valuesConditions.get(0);
 
-                    if (rowData.size() >= 8 && rowConditions.size() >= 3) {
+                    if (rowData.size() >= 6 && rowConditions.size() >= 3) {
                         // Cập nhật giá trị cho các gauge từ bảng dữ liệu tổng
-                        float temperature = Float.parseFloat(rowData.get(0).toString()); //C2
+                        float soilHumidity = Float.parseFloat(rowData.get(3).toString()); // Ví dụ lấy từ cột D
+                        float temperature = Float.parseFloat(rowData.get(0).toString()); // C2
                         float humidity = Float.parseFloat(rowData.get(1).toString());
                         float light = Float.parseFloat(rowData.get(2).toString());
-                        float soilHumidity = Float.parseFloat(rowData.get(3).toString());
 
-                        String pumpStatus = rowData.get(4).toString();
                         float conditionLight = Float.parseFloat(rowConditions.get(0).toString());  // A2
                         float conditionSoilMax = Float.parseFloat(rowConditions.get(1).toString());
                         float conditionSoilStop = Float.parseFloat(rowConditions.get(2).toString());
+
+                        // Chuẩn hóa giá trị đầu vào (không chia cho 100)
+                        float normalizedTemperature = temperature ; // Giữ giá trị từ 0 đến 1
+                        float normalizedHumidity = humidity; // Giữ giá trị từ 0 đến 1
+                        float normalizedLight = light ; // Giữ giá trị từ 0 đến 1
+                        float normalizedSoilHumidity = soilHumidity; // Giữ giá trị từ 0 đến 1
+
+                        // Dự đoán trạng thái máy bơm
+                        float predictedPumpStatus = predictPumpStatus(normalizedTemperature, normalizedHumidity, normalizedLight, normalizedSoilHumidity);
+                        Log.d("Predicted Pump Status", "Giá trị dự đoán: " + predictedPumpStatus);
 
                         // Cập nhật UI trên MainThread
                         getActivity().runOnUiThread(() -> {
@@ -131,12 +173,16 @@ public class GaugeFragment extends Fragment {
                             gaugeLight.speedTo(light);
                             gaugeSoilHumidity.speedTo(soilHumidity);
 
-                            String pumpStatusDisplay = pumpStatus.equals("0") ? "Tắt" : "Bật";
+                            // Cập nhật trạng thái máy bơm theo giá trị dự đoán
+                            String pumpStatusDisplay = predictedPumpStatus == 0 ? "Tắt" : "Bật"; // Giả định ngưỡng 0.5
                             ((EditText) view.findViewById(R.id.pump_status)).setText(pumpStatusDisplay);
+
+                            // Cập nhật điều kiện khác
                             ((EditText) view.findViewById(R.id.condition_light)).setText(String.valueOf((int) conditionLight));
                             ((EditText) view.findViewById(R.id.condition_soil_humidity_max)).setText(String.valueOf((int) conditionSoilMax));
                             ((EditText) view.findViewById(R.id.condition_soil_humidity_min)).setText(String.valueOf((int) conditionSoilStop));
                         });
+                        updateGoogleSheetToggle(predictedPumpStatus == 0 ? 0 : 1);
                     }
                 } else {
                     showToast("Không có dữ liệu trong Google Sheets.");
@@ -147,8 +193,44 @@ public class GaugeFragment extends Fragment {
             }
         }).start();
     }
+    private void updateGoogleSheetToggle(int value) {
+        new Thread(() -> {
+            try {
+                // Cập nhật ô E2 với giá trị mới
+                List<List<Object>> values = new ArrayList<>();
+                values.add(Arrays.asList(value)); // Giá trị cần cập nhật
 
+                // Tạo đối tượng ValueRange
+                ValueRange body = new ValueRange().setValues(values);
 
+                // Cập nhật giá trị cho ô E2
+                sheetsService.spreadsheets().values()
+                        .update(spreadsheetId, "thaydoiDK!E2", body)
+                        .setValueInputOption("RAW") // Cập nhật trực tiếp giá trị
+                        .execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+                showToast("Lỗi khi cập nhật dữ liệu lên Google Sheets.");
+            }
+        }).start();
+    }
+    private float predictPumpStatus(float temperature, float humidity, float light, float soilHumidity) {
+        if (tflite == null) {
+            showToast("Mô hình chưa được khởi tạo.");
+            return -1; // Hoặc giá trị phù hợp để báo lỗi
+        }
+
+        float[] input = {temperature, humidity, light, soilHumidity};
+        float[][] output = new float[1][1];
+
+        // Log thông tin đầu vào
+        Log.d("Input Data", "Temperature: " + temperature + ", Humidity: " + humidity + ", Light: " + light + ", Soil Humidity: " + soilHumidity);
+
+        tflite.run(input, output);
+
+        // Kiểm tra giá trị dự đoán
+        return output[0][0]; // Chắc chắn giá trị này nằm trong khoảng 0 đến 1
+    }
 
     private void showEditConditionsPopup() {
         Dialog dialog = new Dialog(getActivity());
@@ -283,3 +365,4 @@ public class GaugeFragment extends Fragment {
         getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show());
     }
 }
+
