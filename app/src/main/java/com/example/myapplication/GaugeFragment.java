@@ -62,6 +62,7 @@ public class GaugeFragment extends Fragment {
             @Override
             public void run() {
                 fetchDataFromGoogleSheet();
+                fetchToggleStatus();
                 handler.postDelayed(this, 5000);
             }
         };
@@ -75,11 +76,10 @@ public class GaugeFragment extends Fragment {
         toggleConditions.setOnCheckedChangeListener((buttonView, isChecked) -> {
             toggleConditions.setThumbTintList(ColorStateList.valueOf(getResources().getColor(
                     isChecked ? R.color.colorOn : R.color.colorOff)));
-            setConditionsEnabled(!isChecked); // Khóa hoặc mở khóa bảng điều kiện
-            updateGoogleSheetToggle(isChecked); // Cập nhật ô D2 trên Google Sheets
+            setConditionsEnabled(!isChecked);
+            updateGoogleSheetToggle(isChecked);
         });
 
-        // Cập nhật liên tục trạng thái của ô D2 và điều chỉnh Switch
         fetchToggleStatus();
 
         return view;
@@ -138,12 +138,10 @@ public class GaugeFragment extends Fragment {
                             ((EditText) view.findViewById(R.id.condition_soil_humidity_min)).setText(String.valueOf((int) conditionSoilStop));
                         });
                     }
-                } else {
-                    showToast("Không có dữ liệu trong Google Sheets.");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                showToast("Lỗi khi lấy dữ liệu từ Google Sheets.");
+
             }
         }).start();
     }
@@ -231,7 +229,7 @@ public class GaugeFragment extends Fragment {
 
     //bật tắt auto
     private void updateGoogleSheetToggle(boolean toggleStatus) {
-        List<List<Object>> values = List.of(List.of(toggleStatus ? "1" : "0"));
+        List<List<Object>> values = List.of(List.of(toggleStatus ? 1 : 0));
 
         ValueRange body = new ValueRange().setValues(values);
 
@@ -239,7 +237,7 @@ public class GaugeFragment extends Fragment {
             try {
                 sheetsService.spreadsheets().values()
                         .update(spreadsheetId, "thaydoiDK!D2", body)
-                        .setValueInputOption("RAW")
+                        .setValueInputOption("USER_ENTERED")
                         .execute();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -247,6 +245,7 @@ public class GaugeFragment extends Fragment {
             }
         }).start();
     }
+
 
     private void fetchToggleStatus() {
         new Thread(() -> {
@@ -259,7 +258,8 @@ public class GaugeFragment extends Fragment {
                 if (values != null && !values.isEmpty()) {
                     String toggleValue = values.get(0).get(0).toString();
 
-                    boolean toggleStatus = toggleValue.equals("ON");
+                    // Kiểm tra giá trị trong cột D2
+                    boolean toggleStatus = toggleValue.equals("1");
 
                     getActivity().runOnUiThread(() -> {
                         Switch toggleConditions = view.findViewById(R.id.toggle_conditions);
@@ -269,10 +269,11 @@ public class GaugeFragment extends Fragment {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                showToast("Lỗi khi lấy trạng thái Switch từ Google Sheets.");
+
             }
         }).start();
     }
+
 
 
 
